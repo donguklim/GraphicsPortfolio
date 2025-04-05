@@ -28,7 +28,7 @@
 - Implemented unique improvements, including:
   - Fixed-length grass via **Quadratic Bézier Curve**
   - Physics-based dynamic motion using ABA
-  - Physical constraints for joint angles
+  - Physical constraints for joint angle displacements
   - Grass blade twist based on angular displacement
 
 ---
@@ -59,7 +59,7 @@
 - Discarded inaccurate or unstable parts of the original paper
 - Replaced with:
   - **Forward Dynamics via Articulated Body Algorithm (ABA)**
-  - Angle limit constraints
+  - Maximum angular displacement  limit constraints
   - Ground collision handling
 
 ---
@@ -80,19 +80,20 @@
 
 ### Motion Under Strong Wind Force
 
-**Before Angular Limit and Collision**
+**Before Maximum Angular Displacement Limit and Collision**
 
 ![Strong Wind Motion Without Limit](./resources/no_limit.gif "Strong Wind Motion Without Limit")  
 [🔗 Watch on YouTube](https://youtu.be/sHjHLRHukEs)  
 [🔗 Start at wind force 40 scene](https://youtu.be/sHjHLRHukEs?si=raVWfqdE0HeZyLcM&t=68)
 
-**After Angular Limit and Collision**
+**After Maximum Angular Displacement  Limit and Collision**
 
 ![Strong Wind Motion](./resources/after_limit.gif "Strong Wind Motion")  
 [🔗 Start at wind force 40 scene](https://youtu.be/5h7HZT5iuCI?si=dYmNk5WoUefEqJj9&t=36)
 
 Without angular displacement limits and collision:
-1. Grass can store unlimited restoration force
+1. Grass can store unlimited restoration force as it can rotate and twist infinitely
+   - (In reality, grass blades would be just broken already)
 2. Resulting motion becomes inconsistent with wind behavior
 
 ### Reference Study Motion
@@ -138,12 +139,12 @@ Smooth transitions between regions using linear interpolation for:
 
 ## ⚔️ Comparison with *Ghost of Tsushima*
 
-| Feature                         | Ghost of Tsushima    | My Implementation                          |
-|---------------------------------|----------------------|--------------------------------------------|
-| Bézier Curve Type               | Cubic (4-point)      | Quadratic (3-point)                        |
-| Grass Length                    | Uncontrolled (varies)| Fixed                                      |
-| Motion                          | Unknown              | Physics-based dynamics using ABA           |
-| Hierarchical Runtime Generation | Custom Engine        | UE5 PCG + Niagara Data Channel Interface   |
+| Feature                         | Ghost of Tsushima    | My Implementation                        |
+|---------------------------------|----------------------|------------------------------------------|
+| Bézier Curve Type               | Cubic (4-point)      | Quadratic (3-point)                      |
+| Grass Length                    | Uncontrolled (varies)| Fixed                                    |
+| Motion                          | Unknown              | Multi-body forward dynamics using ABA    |
+| Hierarchical Runtime Generation | Custom Engine        | UE5 PCG + Niagara Data Channel Interface |
 
 ---
 
