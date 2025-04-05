@@ -12,6 +12,13 @@
 ## 🔗 Source Code
 [GitHub Repository](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics) - includes README file with algorithmic details.
 
+
+---
+## Project Goal
+- To implement Ghost of Tsushima grass with Unreal Engine 5
+- To demonstrate capability of  Niagara Data Channel and PCG combination on 
+runtime gpgpu simulation of a large number of instances.
+
 ---
 
 ## 🧠 Project Summary
@@ -97,7 +104,7 @@ Without the total angular displacement limit and collision,
 2. resulting motion inconsistent with wind movement
 
 
-### Motion from Reference Paper
+### Reference Study Motion
 
 Motion result of the reference paper after applying several modifications including
 - calculation error fix
