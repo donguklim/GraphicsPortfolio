@@ -62,10 +62,9 @@
     - Niagara interprets & visualizes in real-time
     - Niagara emitters instances kill particles or kill itself based on camera position and direction.
 
-> 📘 *Created a custom tutorial for using PCG with Niagara Data Channel interface, since no existing guides were available.*
+> 📘 *Created a custom tutorial for using PCG with Niagara Data Channel Interface, since no existing guides were available.*
+[PCG + Niagar Data Channel Tutorial Video](https://youtu.be/C1LmzQKNnzI)
 
-<!-- 튜토리얼 영상 위치 -->
-<!-- ![Niagara Tutorial Video](link_to_video.jpg) -->
 
 ---
 
