@@ -5,7 +5,9 @@
 ## 📽️ Demo Video
 [🔗 Watch on YouTube](https://youtu.be/5h7HZT5iuCI?si=WpGUy6z84sb_mj0Y)
 
-![Demo Screenshot](https://img.youtube.com/vi/5h7HZT5iuCI/hqdefault.jpg)
+![Grass Motion Sample 01](./resources/sample_01.gif "Grass Motion Sample 01")
+![Grass Motion Sample 01](./resources/sample_02.gif "Grass Motion Sample 02")
+![Grass Motion Sample 01](./resources/sample_03.gif "Grass Motion Sample 03")
 
 ## 🔗 Source Code
 [GitHub Repository](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics) - includes README file with algorithmic details.
@@ -73,15 +75,42 @@
 
 ---
 ## 🦾 Motion Comparison
+### Motion At Strong Wind force
 
-[🔗 Watch on YouTube](https://youtu.be/5h7HZT5iuCI?si=WpGUy6z84sb_mj0Y)
+**Before Angular Limit and Collision**
 
-![Demo Screenshot](https://img.youtube.com/vi/5h7HZT5iuCI/hqdefault.jpg)
+![Strong Wind Motion Without Limit](./resources/no_limit.gif "Strong Wind Motion Without Limit")
 
-Motion result of the Siggraph paper after
-- fixing calculation error
-- removing inconsistent additional procedures
-- 
+[🔗 Watch on YouTube](https://youtu.be/sHjHLRHukEs)
+
+[🔗 Watch on YouTube(start at the scene with wind force 40)](https://youtu.be/sHjHLRHukEs?si=raVWfqdE0HeZyLcM&t=68)
+
+
+**After Angular Limit and Collision**
+
+![Strong Wind Motion](./resources/after_limit.gif "Strong Wind Motion")
+
+[🔗 Watch on YouTube (The Demo video starting at the scene with wind force 40)](https://youtu.be/5h7HZT5iuCI?si=dYmNk5WoUefEqJj9&t=36)
+
+Without the total angular displacement limit and collision,
+1. grass can store unlimited restoration force 
+2. resulting motion inconsistent with wind movement
+
+
+### Motion from Reference Paper
+
+Motion result of the reference paper after applying several modifications including
+- calculation error fix
+- removal of additional inconsistent algorithms, and substitute those with
+  - Angle limit constraints
+  - Ground collision handling
+- fixed grass length
+
+[🔗 Watch on YouTube](https://youtu.be/qu_WTiCiIrc)
+
+[![Watch the video](https://img.youtube.com/vi/qu_WTiCiIrc/hqdefault.jpg)]
+
+The grasses tend to form a straight line with presence of strong wind force.
 
 ---
 
