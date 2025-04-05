@@ -16,7 +16,7 @@
 ---
 ## Project Goal
 - To implement Ghost of Tsushima grass with Unreal Engine 5
-- To demonstrate capability of  Niagara Data Channel and PCG combination on 
+- To demonstrate capability of  Niagara Data Channel(NDC) and PCG combination on 
 runtime gpgpu simulation of a large number of instances.
 
 ---
@@ -75,11 +75,6 @@ runtime gpgpu simulation of a large number of instances.
     - PCG writes to **Niagara Data Channel**
     - Niagara interprets & visualizes in real-time
     - Niagara emitters instances kill particles or kill itself based on camera position and direction.
-
-> 📘 *Created a custom tutorial for using PCG with Niagara Data Channel Interface, since no existing guides were available.*
-[PCG + Niagar Data Channel Tutorial Video](https://youtu.be/C1LmzQKNnzI)
-
-
 ---
 ## 🦾 Motion Comparison
 ### Motion At Strong Wind force
@@ -155,6 +150,55 @@ The grasses tend to form a straight line with presence of strong wind force.
 | Hierarchical Runtime Generation | Custom Engine        | UE5 PCG + Niagara Data Channel Interface  |
 
 ---
+## 🤔 Challenges & Solution
+### Finding Physically Accurate Algorithm
+I have noticed that the reference paper was ignoring several physical factors,
+but I did not know how to make accurately accurate calculation regarding those factors.
+
+#### Solution 
+
+1. Asked AI (Claude)
+2. It gave me unreliable answers with hallucinations.
+3. Asked what is the common term for this kind of problem and which field of study I should do research
+4. It gave me keyword "Multi-body dynamics"
+5. Briefly googled "Multi-body dynamics" and found out that it was indeed the exact field of study I needed. 
+6. Studied tutorials and basics of multi-body dynamics for 4 days.
+7. Gained enough knowledge to implement ABA
+
+
+### PCG with Niagara Particle Cleanup
+Unlike the case of using static mesh spawner, PCG cannot clean up Niagara particles. 
+Niagara emitters have to kill the particles to avoid duplicate grasses in the same position.
+
+#### Solutions
+1. Kill the particles based on distance between the camera and the PCG grid where the particle belongs tp
+2. Kill the particles based on comparison between particle's spawning time and the last time PCG has sent data to an emitter.
+   - This requires NDC extent to sync with PCG grid size
+   - This may not work if a character moves really fast or is able to teleport
+   - details can be found in bellow my [custom tutorial video](https://youtu.be/C1LmzQKNnzI).
+
+Since writing to NDC from PCG was a new feature, there wasn't any tutorial for using this feature, and had to figure out with my own trial and errors.
+
+So, I have made a tutorial video that could help others.
+
+[🔗 PCG + Niagar Data Channel Tutorial Video](https://youtu.be/C1LmzQKNnzI)
+
+---
+## Future Works
+  - Using Render target or additional NDC to add interaction with other actors including player
+  - Add blow effect of grass pieces
+  - Improve grass models with more varying shapes
+  - Improve optimization possibly applying Nanite
+  - Improve shadows
+---
+## 🛠️ Plugins Used
+  - Niagara
+  - PCG
+  - PCGNiagaraInterop (experimental)
+    - allows write to NDC from PCG
+  - PCGExtendedToolkit
+    - used for creating Voronoi regions
+--- 
 
 ## 📚 References
 
