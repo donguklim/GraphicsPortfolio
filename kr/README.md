@@ -5,9 +5,9 @@
 ## 📽️ 데모 영상
 [🔗 YouTube에서 보기](https://youtu.be/5h7HZT5iuCI?si=WpGUy6z84sb_mj0Y)
 
-![Grass Motion Sample 01](./resources/sample_01.gif)  
-![Grass Motion Sample 02](./resources/sample_02.gif)  
-![Grass Motion Sample 03](./resources/sample_03.gif)
+![Grass Motion Sample 01](../resources/sample_01.gif)  
+![Grass Motion Sample 02](../resources/sample_02.gif)  
+![Grass Motion Sample 03](../resources/sample_03.gif)
 
 ## 🔗 소스 코드
 [GitHub 저장소](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics) – 알고리즘 상세 설명이 포함된 README 파일 포함
@@ -40,7 +40,7 @@
 - **2차 베지어 곡선**을 사용한 풀 블레이드 모델링
     - *Ghost of Tsushima*의 3차 베지어와 달리 길이 고정 유지
 
-![Bezier Curve Grass Example](./resources/bezier_curve_example.jpg)  
+![Bezier Curve Grass Example](../resources/bezier_curve_example.jpg)  
 **베지어 곡선 예시:** P0, P1 지점이 회전 관절로 작동합니다.
 
 ### 💨 바람 및 움직임 시뮬레이션
@@ -82,13 +82,13 @@
 
 **최대 각도 변위 제한 및 충돌 처리 전**
 
-![No Limit](./resources/no_limit.gif)  
+![No Limit](../resources/no_limit.gif)  
 [🔗 YouTube에서 보기](https://youtu.be/sHjHLRHukEs)  
 [🔗 바람 강도 40부터 보기](https://youtu.be/sHjHLRHukEs?si=raVWfqdE0HeZyLcM&t=68)
 
 **최대 각도 변위 제한 및 충돌 처리 후**
 
-![After Limit](./resources/after_limit.gif)  
+![After Limit](../resources/after_limit.gif)  
 [🔗 데모 영상 (바람 강도 40부터)](https://youtu.be/5h7HZT5iuCI?si=dYmNk5WoUefEqJj9&t=36)
 
 제한이 없을 경우:
@@ -114,7 +114,7 @@
 
 ## 🧪 보로노이 기반 절차적 다양성
 
-![Voronoi](./resources/voronoi_example.jpg)  
+![Voronoi](../resources/voronoi_example.jpg)  
 **보로노이 예시:** 동일한 가장 가까운 포인트를 공유하는 위치들은 같은 영역에 속합니다.
 
 PCG로 생성한 보로노이 구역을 통해 다음 요소에 다양성 부여:
@@ -129,10 +129,10 @@ PCG로 생성한 보로노이 구역을 통해 다음 요소에 다양성 부여
 - 개체 밀도
 - 풀 길이
 
-![Voronoi Region](./resources/grass_voronoi_regions.jpg)  
+![Voronoi Region](../resources/grass_voronoi_regions.jpg)  
 **풀 보로노이 구역 예시:** 박스 메시는 보로노이 포인트 위치. 세 개의 영역이 색상, 형상, 밀도가 다름
 
-![Linear Interpolation](./resources/voronoi_region_linear_intp.jpg)  
+![Linear Interpolation](../resources/voronoi_region_linear_intp.jpg)  
 **선형 보간 예시:** 중심(하얀 박스)에서 경계로 갈수록 풀 길이가 점차 변화
 
 ---
