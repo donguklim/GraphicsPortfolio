@@ -148,6 +148,34 @@ Smooth transitions between regions using linear interpolation for:
 
 ---
 
+## 🚀 Performance
+
+FPS was measured using the [GitHub sample project](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics),  
+with a **fixed cleanup multiplier (1.1)** and varying **PCG sampling rates** per grid size.  
+Each grid size used a fixed generation radius, shown below:
+
+| PCG Grid Size | Generation Radius |
+|---------------|-------------------|
+| 400           | 1600              |
+| 800           | 3200              |
+| 1600          | 6000              |
+| 3200          | 8000              |
+
+> *(“n SR” = Sampling Rate for grids of size n)*  
+> FPS was measured a few seconds after beginning play.
+
+---
+
+#### 📊 FPS Results (Across Sampling Rates per Grid Size)
+
+| **FPS Range** | **400 SR** | **800 SR** | **1600 SR** | **3200 SR** |
+|---------------|------------|------------|-------------|-------------|
+| 60 – 70       | 32         | 16         | 8           | 4           |
+| 65 – 75       | 16         | 8          | 4           | 2           |
+| 68 – 78       | 8          | 4          | 2           | 1           |
+| 75 – 80       | 2          | 1          | 1           | 1           |
+---
+
 ## 🤔 Challenges & Solutions
 
 ### Finding a Physically Accurate Algorithm
