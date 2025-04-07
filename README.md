@@ -166,7 +166,7 @@ Each grid size used a fixed generation radius, shown below:
 
 ---
 
-#### 📊 FPS Results (Across Sampling Rates per Grid Size) with RTX 2080 TI
+#### 📊 FPS Results (Across Sampling Rates per square meter for each grid Size) with RTX 2080 TI
 
 | **FPS Range** | **400 SR** | **800 SR** | **1600 SR** | **3200 SR** |
 |---------------|------------|------------|-------------|-------------|
