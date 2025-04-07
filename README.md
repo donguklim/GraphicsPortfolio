@@ -218,6 +218,10 @@ So, I made a tutorial video to help others:
 - Improve grass models with more varied shapes
 - Improve optimization (possibly using Nanite)
 - Improve shadows
+- Point Generation within NDC or Compressed Point Data from PCG
+  - Currently, all grass generation points are sent from PCG to the NDC.
+  - To reduce communication overhead between PCG and NDC, either compressing the point data or letting the Niagara emitter decide where to generate points could be considered.
+  - However, this approach may limit the level of control over grass positions and attributes within the PCG.
 
 ---
 
