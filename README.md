@@ -17,7 +17,7 @@
 ## Project Goal
 - To implement *Ghost of Tsushima*-style grass using Unreal Engine 5
 - To demonstrate the capabilities of the Niagara Data Channel (NDC) and PCG combination in a real-time GPU simulation of a large number of instances.
-
+- To implement physics dynamics motion
 ---
 
 ## 🧠 Project Summary
@@ -100,7 +100,8 @@ Without angular displacement limits and collision:
 
 Results after modifying the reference paper, including:
 - Fixing calculation errors
-- Removing inconsistent algorithms and replacing with:
+- Removing inaccurate acceleration calculation and inconsistent algorithms and replacing with:
+  - acceleration calculation with ABA 
   - Angle limit constraints
   - Ground collision handling
 - Fixed grass length
