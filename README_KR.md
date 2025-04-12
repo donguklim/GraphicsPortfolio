@@ -56,7 +56,7 @@
     - 관절에서의 복원력
 
 ### ⚙️ 물리 시스템
-- [SIGGRAPH 논문](https://dl.acm.org/doi/10.1145/2856400.2876008)을 참고하되 개선 적용
+- [I3D 논문](https://dl.acm.org/doi/10.1145/2856400.2876008)을 참고하되 개선 적용
 - 계산 오류 제거
 - 원 논문의 물리적으로 부정확한 가속도 계산방식, 모순적인 알고리즘을 다음과 같이 대체:
     - **ABA**를 사용한 가속도 계산
@@ -238,7 +238,7 @@ NDC에 PCG에서 직접 쓰는 기능은 신규 기능으로 튜토리얼이 없
 ## 📚 참고 자료
 
 - [GDC Presentation – Procedural Grass in *Ghost of Tsushima*](https://youtu.be/Ibe1JBF5i5Y?si=EbGqmGS29uNdBPUn)
-- [SIGGRAPH Paper – Grass Swaying with Dynamic Wind Force](https://link.springer.com/article/10.1007/s00371-016-1263-7)
+- [I3D Paper – Grass Swaying with Dynamic Wind Force](https://link.springer.com/article/10.1007/s00371-016-1263-7)
 - [Unreal Engine Documentation – Niagara Data Channels Intro](https://dev.epicgames.com/community/learning/tutorials/RJbm/unreal-engine-niagara-data-channels-intro)
 
 ---

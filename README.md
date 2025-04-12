@@ -55,7 +55,7 @@
   - Restoration force from grass joints
 
 ### ⚙️ Physics System
-- Referenced but improved upon [SIGGRAPH paper](https://dl.acm.org/doi/10.1145/2856400.2876008)
+- Referenced but improved upon [I3D paper](https://dl.acm.org/doi/10.1145/2856400.2876008)
 - Discarded inaccurate or unstable parts of the original paper
 - Replaced with:
   - **Forward Dynamics via Articulated Body Algorithm (ABA)**
@@ -239,7 +239,7 @@ So, I made a tutorial video to help others:
 ## 📚 References
 
 - [GDC Presentation – Procedural Grass in *Ghost of Tsushima*](https://youtu.be/Ibe1JBF5i5Y?si=EbGqmGS29uNdBPUn)
-- [SIGGRAPH Paper – Grass Swaying with Dynamic Wind Force](https://link.springer.com/article/10.1007/s00371-016-1263-7)
+- [I3D Paper – Grass Swaying with Dynamic Wind Force](https://link.springer.com/article/10.1007/s00371-016-1263-7)
 - [Unreal Engine Documentation – Niagara Data Channels Intro](https://dev.epicgames.com/community/learning/tutorials/RJbm/unreal-engine-niagara-data-channels-intro)
 
 ---
