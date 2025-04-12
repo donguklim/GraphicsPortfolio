@@ -1,6 +1,6 @@
 # 🎮 언리얼 엔진 5에서의 다중 강체 동역학 기반 풀 움직임 시스템
 
-> *Ghost of Tsushima*에서 영감을 받은 물리 기반 풀 애니메이션 시스템을 언리얼 엔진 5, Niagara, PCG, 다중 강체 동역학을 활용해 구현한 프로젝트입니다.
+> *Ghost of Tsushima*에서 영감을 받은 물리 기반 풀 애니메이션 시스템을 언리얼 엔진 5, Niagara, Procedural Content Generation, 다중 강체 동역학을 활용해 구현한 프로젝트입니다.
 
 ## 📽️ 데모 영상
 [🔗 YouTube에서 보기](https://youtu.be/5h7HZT5iuCI?si=WpGUy6z84sb_mj0Y)
@@ -16,7 +16,7 @@
 
 ## 프로젝트 목표
 - 언리얼 엔진 5로 *Ghost of Tsushima* 스타일의 풀 구현
-- Niagara 데이터 채널(NDC)과 PCG 조합의 실시간 GPU 시뮬레이션 능력 시연
+- Niagara 데이터 채널(NDC)과 Procedural Content Generation(PCG) 조합의 실시간 GPU 시뮬레이션 능력 시연
 - 물리 역학 기반의 모션 구현
 
 ---
@@ -65,7 +65,7 @@
 - 고정된 잔디 길이
 ---
 
-## 🔌 Niagara 데이터 채널 + PCG 통합
+## 🔌 Niagara 데이터 채널 + Procedural Content Generation 통합
 
 - Niagara 이미터가 PCG 그리드 기반으로 동적 생성
 - ABA 기반 모션 데이터(각속도, 가속도, 변위)를 Niagara에서 계산
@@ -113,12 +113,12 @@
 
 ---
 
-## 🧪 보로노이 기반 절차적 다양성
+## 🧪 보로노이 다이어그램 기반 절차적 다양성
 
 ![Voronoi](./resources/voronoi_example.jpg)  
-**보로노이 예시:** 동일한 가장 가까운 포인트를 공유하는 위치들은 같은 영역에 속합니다.
+**보로노이 다이어그램 예시:** 동일한 가장 가까운 포인트를 공유하는 위치들은 같은 영역에 속합니다.
 
-PCG로 생성한 보로노이 구역을 통해 다음 요소에 다양성 부여:
+PCG로 생성한 보로노이 다이어그램 구역을 통해 다음 요소에 다양성 부여:
 - 풀 길이
 - 너비
 - 강성
@@ -131,7 +131,7 @@ PCG로 생성한 보로노이 구역을 통해 다음 요소에 다양성 부여
 - 풀 길이
 
 ![Voronoi Region](./resources/grass_voronoi_regions.jpg)  
-**풀 보로노이 구역 예시:** 박스 메시는 보로노이 포인트 위치. 세 개의 영역이 색상, 형상, 밀도가 다름
+**풀 보로노이 다이어그램 구역 예시:** 박스 메시는 보로노이 다이어그램 포인트 위치. 세 개의 영역이 색상, 형상, 밀도가 다름
 
 ![Linear Interpolation](./resources/voronoi_region_linear_intp.jpg)  
 **선형 보간 예시:** 중심(하얀 박스)에서 경계로 갈수록 풀 길이가 점차 변화
@@ -231,7 +231,7 @@ NDC에 PCG에서 직접 쓰는 기능은 신규 기능으로 튜토리얼이 없
 - PCGNiagaraInterop (experimental)
     - PCG에서 NDC로 데이터 쓰기 가능
 - PCGExtendedToolkit
-    - 보로노이 구역 생성에 사용
+    - 보로노이 다이어그램 구역 생성에 사용
 
 ---
 

@@ -16,7 +16,7 @@
 
 ## Project Goal
 - To implement *Ghost of Tsushima*-style grass using Unreal Engine 5
-- To demonstrate the capabilities of the Niagara Data Channel (NDC) and PCG combination in a real-time GPU simulation of a large number of instances.
+- To demonstrate the capabilities of the Niagara Data Channel (NDC) and Procedural Content Generation(PCG) combination in a real-time GPU simulation of a large number of instances.
 - To implement physics dynamics motion
 ---
 
@@ -64,7 +64,7 @@
 
 ---
 
-## 🔌 Niagara Data Channel + PCG Integration
+## 🔌 Niagara Data Channel + Procedural Content Generation Integration
 
 - Niagara emitters dynamically spawned based on the PCG grid
 - ABA-based motion data (angular velocity, acceleration, displacement) calculated in Niagara
@@ -113,12 +113,12 @@ The grass tends to align into straight lines under strong wind.
 
 ---
 
-## 🧪 Procedural Variation with Voronoi
+## 🧪 Procedural Variation with Voronoi Diagram
 
 ![Voronoi Diagram Example](./resources/voronoi_example.jpg "An example of Voronoi Diagram")  
 **Voronoi Diagram Example:** Locations sharing the same nearest point belong to the same region.
 
-PCG-generated Voronoi regions used to assign:
+PCG-generated Voronoi diagram regions used to assign:
 - Grass length
 - Grass width
 - Stiffness
@@ -131,7 +131,7 @@ Smooth transitions between regions using linear interpolation for:
 - Grass length
 
 ![Grass Region Example](./resources/grass_voronoi_regions.jpg "Grass Region Example")  
-**Grass Voronoi Region Example:** Box meshes mark Voronoi points. Three regions with different colors, shapes, and population densities.
+**Grass Voronoi Diagram Region Example:** Box meshes mark Voronoi points. Three regions with different colors, shapes, and population densities.
 
 ![Grass Region Interpolation Example](./resources/voronoi_region_linear_intp.jpg "Grass Region Interpolation Example")  
 **Region Linear Interpolation Example:** Gradual change in grass length from region center (white box) to boundary.
@@ -232,7 +232,7 @@ So, I made a tutorial video to help others:
 - PCGNiagaraInterop (experimental)
   - Allows PCG to write to NDC
 - PCGExtendedToolkit
-  - Used to create Voronoi regions
+  - Used to create Voronoi diagram regions
 
 ---
 
