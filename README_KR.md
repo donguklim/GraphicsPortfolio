@@ -231,7 +231,7 @@ Multi-body Dynamics의 기초와 기본개념을 부랴부랴 4,5일 동안 공�
 [지면 충돌 알고리즘 링크](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#ground-collision)
 
 
-## 다이나믹 모션과 고스트 오브 쓰시마의 잔디의 조합
+### 다이나믹 모션과 고스트 오브 쓰시마의 잔디의 조합
 
 다이나믹스 모션을 사용했기에 각 잔디는 각 속도와 각 변위를 저장하여 가지고 있었고, 이를 손쉽게 구현하기 위해서 나이아가라를 사용할 필요가 있습니다.
 
