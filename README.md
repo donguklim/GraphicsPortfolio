@@ -40,43 +40,47 @@ Grass movement is realized by adjusting the angles of line segments connecting t
 - The angle of the joint at ground-level (P0) was adjusted using the instance's transformation.
 - The angle of joint P1 was adjusted using WPO.
 
-Choosing a degree-3 Bezier curve instead of a higher degree curve (as used in Ghost of Tsushima) reduces the required resources and offers another significant advantage.
-It is the fact that there exists the equation for calculating the curve length.
+Choosing a degree-3 Bezier curve instead of a higher degree curve (as used in Ghost of Tsushima) reduces the required resources and offers another significant advantage. 
+
+It allows the curve length to be calculated using an existing formula.
 
 ## Adjusting Grass Length
 
-Bezier curves have following characteristics
-- change of joint angle changes the curve length
-- Bezier curves with degree greater than 3 does not have an analytic equation to calculate the curve length
-  - the curve length can only be calculated with numerical method
+Bezier curves have the following characteristics:
+- Changing the joint angle changes the curve length.
+- Bezier curves of degree greater than 3 do not have an analytic equation to calculate curve length.
+  - The curve length must be calculated numerically.
 
-Ghost of Tsushima is using degree 4 Bezier curves and grasses have varying lengths.
+Ghost of Tsushima uses degree-4 Bezier curves, and grass blades have varying lengths.
 
-In the GDC presentation, the developer of the game said that the grass length change is not really evident so they just left it as it is.
+In the GDC presentation, the developer mentioned that the variation in grass length is not very noticeable, so they left it as is.
 
-However, in simulations with stronger winds force and large noise amplitude, grasses will show more varying movement making the length change evident.
+However, in simulations with strong wind forces and large noise amplitudes, the varying movement makes the length change more apparent.
 
-In my implementation, I used a degree-3 Bezier curve, maintaining consistent grass lengths. 
-
+In my implementation, I used a degree-3 Bezier curve, which maintains consistent grass lengths.
 
 ---
 
-Initially, I assumed the equation for calculating degree 3 Bezier curve length must already exist since Bezier curve is popular, but I couldn't find the equation via Google search.
+Initially, I assumed a formula for calculating the length of a degree-3 Bezier curve must already exist since Bezier curves are common, but I couldn't find one through a Google search.
 
-Thus, I invested several hours to derive the length calculation equation myself.
+So, I invested several hours to derive the formula myself.
 
 [Derivation Process for the Length Calculation Formula](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics?tab=readme-ov-file#quadratic-bezier-curve-length-control)
 
 ---
 
+Got it! Here's your original markdown with grammar corrections and improved natural phrasing. I’ve preserved your formatting:
+
+---
+
 # Creating Grass at Runtime in a Hierarchical Structure
 
-Ghost of Tsushima's grass has a hierarchical structure. 
+Ghost of Tsushima's grass has a hierarchical structure.
 
-Within a large-sized grid, smaller grids at lower levels are included, and the grass in each grid is generated/destroyed at runtime depending on the distance from the camera.
+Within a large grid, smaller grids at lower levels are nested, and grass within each grid is generated or destroyed at runtime depending on the distance from the camera.
 
-The larger the grid size, the lower the density of grass, and the longer the distance from the camera for generation/destruction.
-Conversely, the smaller the grid size, the higher the density of grass, and the shorter the generation/destruction distance.
+The larger the grid size, the lower the grass density, and the farther the generation/destruction distance from the camera.  
+Conversely, the smaller the grid size, the higher the grass density, and the shorter the generation/destruction distance.
 
 This was easily implemented using Unreal Engine's PCG hierarchical grid system and runtime generation.
 
@@ -85,14 +89,14 @@ This was easily implemented using Unreal Engine's PCG hierarchical grid system a
 ![Voronoi](./resources/voronoi_example.jpg)  
 **Voronoi Diagram Example:** Locations that share the same closest point belong to the same region.
 
-In Ghost of Tsushima, regions were distinguished using Voronoi diagrams, and the grass in each region shared common characteristics (length, shape, direction, etc.) with noise added to individual instances.
+In Ghost of Tsushima, regions were distinguished using Voronoi diagrams, and the grass in each region shared common characteristics (length, shape, direction, etc.) with per-instance noise added.
 
-Although I do not know exactly how Sucker Punch Studio generated it, I also used Voronoi diagrams to make grass in the same region share the following characteristics:
+Although I do not know exactly how Sucker Punch Studio implemented it, I also used Voronoi diagrams to make grass within the same region share the following characteristics:  
 Shared characteristics:
 - Grass length
 - Width
 - Rigidity
-- Flow of direction (using Perlin noise with different random seeds for each region to generate direction)
+- Directional flow (using Perlin noise with different random seeds per region to generate direction)
 - Color noise
 - Instance density
 
@@ -100,38 +104,45 @@ Some characteristics were set to transition gradually using linear interpolation
 - Instance density
 - Grass length
 
-In the image below, the white boxes are located at the center points of the Voronoi diagram regions.
+In the image below, the white boxes are located at the center points of the Voronoi regions.
 
 ![Voronoi Region](./resources/grass_voronoi_regions.jpg)  
-**Grass Voronoi Diagram Region Example:** Box meshes are Voronoi diagram point positions. Three regions have different colors, shapes, densities, and directional flows.
+**Grass Voronoi Diagram Region Example:** Box meshes are Voronoi center points. Three regions have different colors, shapes, densities, and directional flows.
 
 ![Linear Interpolation](./resources/voronoi_region_linear_intp.jpg)  
 **Linear Interpolation Example:** Grass length gradually changes from the center (white box) to the boundary.
 
-Voronoi center points are generated using PCG.
-Each point that will become a grass instance calculates its distance to the set of points that will become center points and takes the attributes of the center point of the region it belongs to.
-The basic PCG only has the functionality to calculate the distance between a point with the nearest point in a point set, but not the functionality to retrieve the attributes of the closest point in the set.
+Voronoi center points are generated using PCG.  
+Each point that becomes a grass instance calculates its distance to the set of Voronoi center points and inherits the attributes of the center point of the region it belongs to.  
+Basic PCG only supports calculating the distance to the nearest point in a point set, but does not provide functionality to retrieve attributes from that nearest point.
 
-The functionality to retrieve attributes from the closest point in another point set can be used with a third-party plugin called PCG Extended Toolkit.
+To retrieve attributes from the closest point in another point set, a third-party plugin called **PCG Extended Toolkit** can be used.
 
-For linear interpolation, each point that becomes a grass instance also retrieves the distance and attributes of the second closest Voronoi region in addition to the distance to the center point of the region it belongs to.
-Linear interpolation is performed using these two values.
+For linear interpolation, each grass instance point also retrieves the distance and attributes of the second closest Voronoi region in addition to those of the region it belongs to.  
+Linear interpolation is then performed using both sets of values.
 
 ## Wind Simulation
 
-Wind is generated using a leveled gradient noise function. There is a UI that allows adjustment of the basic wind force, and force resulting from noise is added to the basic force.
-The direction of the moving noise is set to match the direction of the basic wind force.
+Wind is generated using a layered gradient noise function.  
+A UI allows adjustment of the base wind force, and noise-based force is added on top of it.  
+The direction of the moving noise is set to match the base wind force direction.
 
 # ⚙️ Physics-Based Motion Implementation
 
-While researching papers on grass motion, I found the ID3 paper ([Grass Swaying with Dynamic Wind Force](https://dl.acm.org/doi/10.1145/2856400.2876008)) that uses Bezier curve grass to create motion, just like Ghost of Tsushima.
+While researching papers on grass motion, I found the ID3 paper ([Grass Swaying with Dynamic Wind Force](https://dl.acm.org/doi/10.1145/2856400.2876008)), which uses Bezier curve-based grass animation—just like Ghost of Tsushima.
 
-Initially, I tried to implement exactly what was described in the paper, but the paper had several issues, and eventually my implementation used completely different calculations and algorithms than those presented in the paper.
+Initially, I tried to implement exactly what was described in the paper, but the paper had several issues.  
+Eventually, my implementation used completely different calculations and algorithms from those in the paper.
 
 ## Basic Dynamics
 
-In the reference paper, each joint has elasticity that creates a restoration torque to return to its original shape, and the angular acceleration that occurs due to the wind force torque and air friction force torque is calculated every frame.
-Then, it creates motion using a dynamics approach that updates the angular velocity and angular displacement resulting from the angular acceleration.
+In the reference paper, each joint has elasticity that creates a restoring torque to return it to its original shape.  
+
+The angular acceleration resulting from wind force torque and air friction torque is calculated every frame.  
+
+Motion is then created using a dynamics-based approach, updating angular velocity and angular displacement using the computed angular acceleration.
+
+---
 
 ### Forces Due to Wind and Air Friction
 When a specific surface makes contact with air, forces are calculated as follows:
@@ -153,98 +164,109 @@ When a specific surface makes contact with air, forces are calculated as follows
   - k = joint strength
   - $\overrightarrow{\Delta\theta}$ = angular displacement of grass. The vector direction indicates the rotation axis, and the vector length indicates the rotation angle. Left hand rule is used.
 
+Thanks for the detailed markdown. Here's your revised version with grammar and natural phrasing improved throughout while keeping your technical tone and markdown structure intact:
+
+---
+
 ## Problems with the Reference Study
 
 ### Inaccurate Restoration Torque Calculation Method
-The author calculated the restoration torque in a strange way that differs from convention, creating [a relationship between the grass's angular displacement and restoration torque that is neither linear nor monotonic](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#inconsistent-restoration-force-direction).
-The author created an odd calculation formula makes the grass restoration torque to gradually become zero when the grass blade is bent upto a certain angle. 
-Then the restoration torque increases again with further bending.
 
-The author does not provide any justification for this unconventional formula. This appears to be a simple mistake by the author.
+The author calculated the restoration torque in an unconventional way, creating [a relationship between angular displacement and restoration torque that is neither linear nor monotonic](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#inconsistent-restoration-force-direction).  
+The formula causes the restoration torque to gradually drop to zero as the grass bends up to a certain angle, then increase again with further bending.
+
+The author does not provide any justification for this behavior. It appears to be a simple mistake.
 
 ### Inaccuracy from Treating Forces as Point Forces
 
-Forces due to wind and air friction occur along the entire Bezier curve line segment. However, the paper's author treats each force as occurring at the end point of each line segment when calculating torque.
-Additionally, when calculating the force due to air friction, the author makes the mistake of using angular velocity instead of calculating with the velocity of the end point of the bar.
+Wind and air friction forces act along the entire Bezier curve segment. However, the author of the paper treats these forces as if they act at the endpoint of each segment when calculating torque.  
+Additionally, when calculating the air friction force, the author mistakenly uses angular velocity instead of computing the actual velocity at the end of the bar.
 
-To calculate the correct torque, [integration over the line segment should be performed](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#wind-and-air-friction-are-not-point-forces).
+To calculate torque correctly, [integration over the entire segment is required](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#wind-and-air-friction-are-not-point-forces).
 
-### Ignoring Physical Factors in Torque and Acceleration Calculations
+### Ignoring Physical Interactions Between Connected Bars
 
-The torque calculation method and angular acceleration calculation method used by the paper's author are applicable only when each line segment exists independently.
-For example, in the figure above, if the end of Bar2 is strongly hit counterclockwise, Bar1 could move clockwise in reaction. However, the study does not consider this at all.
-
+The torque and angular acceleration calculations used by the author are valid only when each segment is treated as independent.  
+For example, if the end of Bar2 is forcefully pushed counterclockwise, Bar1 could respond with a clockwise motion. This kind of interaction is not considered in the study at all.
 
 ## 🧩 How I Came to Implement the ABA Algorithm
 
 Before adopting ABA, here's what I went through:
-1. I asked Claude AI what this type of problem is called and what keywords I should search to do research.
-2. Claude AI suggested the keyword **Multi-Bar Linkage System**.
-3. Using this keyword, I was able to deepen my knowledge in physics—learning about torque, drawing free body diagrams, etc.—but still couldn’t find a clear solution.
-4. I spent two weeks drawing free body diagrams and writing down mathematical formulas to come up with my own original algorithm.
-5. It seemd Claude AI had been updated, I asked again for appropriate keywords to research.
-6. Claude AI then gave me the keyword **Multi-body Dynamics**.
 
-Multi-body Dynamics is a field focused on the dynamics of rigid bodies connected via chains or linkages.
+1. I asked Claude AI what this kind of problem is called and what keywords I should use to research it.
+2. Claude AI initially suggested the keyword **Multi-Bar Linkage System**.
+3. Using that keyword, I deepened my understanding of torque, free-body diagrams, etc.—but still couldn’t find a clear solution.
+4. I spent two weeks drawing free-body diagrams and writing out math formulas to come up with my own original algorithm.
+5. After a Claude AI update, I asked again and received the keyword **Multi-body Dynamics**.
+
+Multi-body Dynamics is a field that studies the motion of rigid bodies connected by joints or linkages.
 
 ![Linear Interpolation](./resources/pepe_flabbergasted.jpg)
 
-It was the field I exactly needed.
+It was exactly the field I needed.
 
-When I asked Claude why it hadn’t told me earlier, it responded that it had recently been updated and added knowledge of Multi-body Dynamics and robotics.
+When I asked Claude why it hadn’t mentioned it earlier, it responded that it had only recently been updated with knowledge of Multi-body Dynamics and robotics.
 
-Over the next 4–5 days, I studied the fundamental concepts of Multi-body Dynamics 
-and discovered that the most efficient algorithm for the type of motion I wanted to implement was the Articulated Body Algorithm (ABA).
+Over the next 4–5 days, I studied the fundamentals of Multi-body Dynamics  
+and discovered that the most efficient algorithm for my use case was the **Articulated Body Algorithm (ABA)**.
 
-## 📌 My Inaccurate Original Algorithm - The Payback Method
+## 📌 My Inaccurate Original Algorithm – The Payback Method
 ---
-This section outlines an original algorithm I came up with and how it worked.
 
-Since the algorithm wasn’t accurate and was later replaced, there’s no need to read this part in detail.
+This section outlines an algorithm I created on my own and how it worked.
 
-It was a wasted effort despite spending two weeks on it.
+Since the algorithm was later replaced due to inaccuracy, you can skip this part if you're not interested in the process.
+
+Still, I spent two weeks on it, so here's what I did:
 
 ---
-By searching with the keywords provided by Claude, I learned about drawing free-body diagrams and gained deeper knowledge about torque, but ultimately I couldn't find a clear method.
-Searching for **Multi-Bar Linkage** only yielded methods for calculating torque in systems where all joints at the endpoints are stationary, and didn't address cases like Bezier curve grass where one end is not stationary but open.
 
-As a result, I independently used an algorithm called [Payback](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#payback-moment-algorithm). The algorithm was created with the following ideas:
+Using the keywords suggested by Claude, I learned how to draw free-body diagrams and gained deeper insight into torque.  
+However, I still couldn’t find a method for systems like Bezier-curve-based grass, where one end is free rather than fixed.
 
-1. I'm not sure how to calculate torque and angular acceleration when there's a P1 joint.
-2. But if the restoration torque, air friction and wind force torque cancel each other out so that the net torque is 0 and the P1 joint is not moving, then it can be assumed that the bars are moving as if there is no joint P1.
-3. Let's lend torque to P1 to make the net torque 0, calculate the acceleration, and then take it back later to rotate bar2. However, we must also consider the torque due to the inertia force created when P1 moves.
-4. I don't know how to calculate bar2's angular acceleration when p1 is not stationary.
-5. As in step 3, let's lend torque to p0 to keep p1 fixed and calculate p1's angular acceleration. However, we must also consider the recoil generated by bar2's movement when taking back the torque from P0.
-6. We also need to take back the torque lent to P0. Let's go back to step 3.
+As a result, I came up with my own method, which I called the [Payback Algorithm](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#payback-moment-algorithm), based on the following reasoning:
 
-The idea was to roughly calculate the angular acceleration by lending torque to fix each joint and then taking back the lent torque later.
-Since the process of lending and receiving could repeat infinitely, I set it to repeat only a certain number of times before stopping.
+1. I didn’t know how to compute torque and angular acceleration when there's a P1 joint.
+2. But if restoration torque, air friction, and wind torque cancel out to a net torque of zero and the P1 joint remains stationary, I could assume the bars move as if P1 doesn’t exist.
+3. So, I decided to “lend” torque to P1 to make the net torque zero, calculate acceleration, then “take it back” to rotate Bar2. But I also had to consider the inertial torque caused when P1 starts moving.
+4. I didn’t know how to compute Bar2’s angular acceleration when P1 isn’t fixed.
+5. As in Step 3, I “lent” torque to P0 to hold P1 fixed, computed P1’s angular acceleration, then considered the recoil effect when taking torque back from P0.
+6. I also needed to take back the torque lent to P0, leading me back to Step 3.
 
-Later, I thought that instead of making the net torque of the current joint 0, perhaps I could achieve an effect similar to infinite repetition by calculating with a linear system solving approach that considers the recoil generated by the bar's movement when lending torque.
+The idea was to approximate angular acceleration by successively lending torque to hold joints stationary, then taking it back.  
+Since this could loop infinitely, I limited the number of iterations.
 
-Both linear system solution approach and limiting the number of payback did show somewhat plausible movements.
+Later, I realized that instead of enforcing net-zero torque, I could treat the system as a linear system that accounts for the recoil caused by these torque transfers—potentially approximating an infinite feedback loop.
+
+Both the linear system solution and the limited Payback iteration method produced somewhat plausible motion.
 
 ## 🦾 Articulated Body Algorithm
 
-This is the most efficient simulation algorithm known in the field of Multi-body Dynamics, capable of accurately simulating angular accelerations by taking into account the forces transmitted through each joint.
+This is the most efficient simulation algorithm known in Multi-body Dynamics. It accurately simulates angular acceleration by accounting for the forces transmitted across joints.
 
-Detailed information on the algorithm can be found in Professor Roy Featherstone's book, [Rigid Body Dynamics Algorithms](https://link.springer.com/book/10.1007/978-1-4899-7560-7).
+For detailed explanations, refer to Professor Roy Featherstone’s book:  
+[Rigid Body Dynamics Algorithms](https://link.springer.com/book/10.1007/978-1-4899-7560-7).
 
-This is currently the default algorithm used in the project. Although I’ve left my custom-made algorithm as an optional choice, I think I may discard it later.
+This is now the default algorithm used in this project.  
+Although my original algorithm remains as an optional feature, I’m likely to discard it later.
 
 ## 🛑 Maximum Angular Displacement Limitation
 
-Real grass cannot rotate or twist infinitely. I set a maximum angle threshold for rotation on any axis, and made the angular velocity become 0 when the maximum angular displacement is reached.
+Real grass can't twist or rotate infinitely.  
+I implemented a maximum angular displacement limit on each axis.  
+When this threshold is reached, the angular velocity is clamped to zero.
 
 [Angular Displacement Limitation Algorithm Link](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#angular-displacement-magnitude-limitation-on-p0)
 
 ## 🚧 Ground Collision Handling
 
-Ground collision was handled by ensuring the dot product of the ground normal vector and Bar1 direction stays above a certain threshold, and the velocity becomes 0 when the threshold is reached.
+Ground collision is handled by checking if the dot product between the ground normal and the Bar1 direction stays above a certain threshold.  
+If the threshold is reached, the velocity is set to zero.
 
 [Ground Collision Algorithm Link](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#ground-collision)
 
 ---
+
 
 # 🛠️ System Integration
 
