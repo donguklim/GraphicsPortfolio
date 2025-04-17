@@ -24,9 +24,9 @@ Sucker Punch Studio가 GDC에서 발표한 [영상](https://youtu.be/Ibe1JBF5i5Y
 GDC 발표 영상에서 Sucker Punch Studio는 잔디의 모션은 어떻게 이루어지는 지 말해주지 않았고, 이에 물리역학 기반의 모션을 넣는 것을 목표에 추가했습니다.
 
 
-## 고스트 오브 쓰시마의 잔디와 구현 과정
+# 🌾 고스트 오브 쓰시마의 잔디와 구현 과정
 
-### 고스트 오브 쓰시마의 Bezier 커브 기반 잔디 모델링
+## 고스트 오브 쓰시마의 Bezier 커브 기반 잔디 모델링
 ![Bezier Curve Grass Example](./resources/bezier_curve_example.jpg)
 
 잔디는 일정 갯수의 포인트로 컨트롤 할 수 있는 베지어 커브를 기반으로 렌더링된 모델을 사용합니다.
@@ -34,7 +34,7 @@ GDC 발표 영상에서 Sucker Punch Studio는 잔디의 모션은 어떻게 이
 잔디의 움직임은 베지어 포인트를 연결하는 라인 시그먼트의 각도를 조절 하므로서 이루어집니다.
 위의 그림과 달리 고스트 오브 쓰시마는 3개의 라인 시그먼트로 이루어진 degree 4의 베지어 커브를 사용합니다.
 
-### 마테리얼 셰이더를 사용한 잔디 모델링
+## 마테리얼 셰이더를 사용한 잔디 모델링
 - UE5의 마테리얼 셰이더에서 WPO를 조절하여 정사각형의 2D 메쉬로 렌더링 모델을 구현.
 - 고스트 오브 쓰시마와 달리 위의 그림과 같은 degree 3의 베지어 커브 기반 잔디를 모델링 함.
 - 땅과 맞다은 P0의 조인트의 각도는 인스턴스의 트랜스포메이션을 사용해 조절.
@@ -43,7 +43,7 @@ GDC 발표 영상에서 Sucker Punch Studio는 잔디의 모션은 어떻게 이
 고스트 오브 쓰시마와 달리 degree 3의 베지어 커브 기반 잔디를 모델링 하였는데,
 이는 관절이 줄어들음으로서 더 적은 리소스를 요구하는 것 외에도 중요한 추가적 이점이 하나 있습니다.
 
-### 잔디의 길이 조절
+## 잔디의 길이 조절
 
 베지어 커브는 각 관절의 각도가 바뀔 떄마다 커브의 길이가 달라집니다.
 그렇기에 잔디의 길이를 일정하게 하기 위해서는 각 모션에 따라 메쉬를 리사이즈 할 필요가 있습니다.
@@ -67,7 +67,7 @@ Degree 4이상의 베지어 커브 길이는 수치 해석적으로만 구할 �
 
 ---
 
-### 계층구조로 런타임에 잔디 생성
+## 계층구조로 런타임에 잔디 생성
 
 고스트 오브 쓰시마의 잔디는 계층구조를 가지고 있습니다. 큰 사이즈의 그리드에, 하위 레벨의 더 작은 그리드가 포함된 식으로 카메라와의 거리에 따라 각 그리드의 잔디가 런타임에 생성/소멸 됩니다.
 
@@ -76,7 +76,7 @@ Degree 4이상의 베지어 커브 길이는 수치 해석적으로만 구할 �
 
 이는 Unreal Engine의 PCG의 hierarchical grid 시스템과 런타임 생성을 사용하여 손쉽게 구현 할 수 있었습니다.
 
-### 보로노이 다이어그램 기반 지역 생성
+## 보로노이 다이어그램 기반 지역 생성
 
 ![Voronoi](./resources/voronoi_example.jpg)  
 **보로노이 다이어그램 예시:** 동일한 가장 가까운 포인트를 공유하는 위치들은 같은 영역에 속합니다.
@@ -113,23 +113,23 @@ Degree 4이상의 베지어 커브 길이는 수치 해석적으로만 구할 �
 Linear interpolation을 위해 각 잔디 인스턴스가 되는 포인트는 자신이 속한 지역의 중심점과의 거리 외에도 2번째로 가까운 보로노이 지역의 거리와 attribute 또한 가져옵니다.
 이 두 값을 사용해 사용해 linear interpolation을 수행합니다.
 
-### 바람
+## 바람
 
 바람은 leveled gradient noise 함수를 사용해 생성됩니다. 기본적인 바람의 포스를 조절 할 수 있는 UI가 존재하며, 기본 포스에 노이즈로 인한 포스가 추가 됩니다.
 노이즈가 움직이는 방향은  기본 바람 포스와 같은 방향을 가지게 됩니다.
 
-### Multi-body Dynamics 기반 모션 구현과정
+## Multi-body Dynamics 기반 모션 구현과정
 
 잔디의 모션에 대한 논문을 구글링 하면서, 고스트 오브 쓰시마와 똑같이 베지어 커브 잔디를 사용해 모션을 만드는 ID3 논문을([Grass Swaying with Dynamic Wind Force](https://dl.acm.org/doi/10.1145/2856400.2876008)) 찾게 되었습니다.
 
 처음에는 논문에 나온 내용을 그대로 구현하려고 했으나 논문은 몇 몇 문제를 가지고 있었고, 결국 제 구현 방식은 논문에서 나온것과 전혀 다른 계산식과 알고리즘을 사용하게 되었습니다.
 
-### 기본 다이나믹
+## 기본 다이나믹
 
 레퍼런스 논문에서는 각 조인트는 탄성이 있어서 원래 형태로 돌아가려는 restoration 토크를 일으키고, 바람 포스가 일으키는 토크, 공기 마찰 포스로 인한 토크로 인해 발생하는 각 가속도(angular acceleration)를 매 프레임 마다 구합니다.
 그리고 각가속도로 인한 각 속도(angular velocity)와 각 변위(angular displacement)를 업데이트하는 다이나믹스 방식으로 모션을 만듭니다.
 
-#### 바람과 공기 마찰로 인한 포스
+### 바람과 공기 마찰로 인한 포스
 특정 표면이 공기와 접하고 있을때 포스는 다음과 같이 계산 됩니다.
 1. 공기 마찰로 인한 포스 = $-cs\overrightarrow{v}$
    -  c는 공기 마찰 계수입니다. 계수가 높다는 것은 현재 공기의 밀도가 높다는 것입니다.
@@ -139,7 +139,7 @@ Linear interpolation을 위해 각 잔디 인스턴스가 되는 포인트는 �
     - 여기서도 s는 마찬가지로 면적입니다.
     - $\overrightarrow{W}$는 바람의 면적당 포스를 가리킵니다.
 
-#### Restoration 포스에 대한 기본 전제
+### Restoration 포스에 대한 기본 전제
 ![Bezier Curve Grass Example](./resources/bezier_curve_example.jpg)
 
 1. P0은 어느 축으로든 회전 가능한 볼 조인트
@@ -150,31 +150,31 @@ Linear interpolation을 위해 각 잔디 인스턴스가 되는 포인트는 �
     - $\overrightarrow{\Delta\theta}$ = 잔디의 각 변위. 벡터 방향은 회전 축을, 벡터 길이는 회전 각도를 가리킨다.  Left hand rule 사용.
 
 
-### 레퍼런스 논문의 문제점
-#### 이상한 Restoration Torque 계산 방식
+## 레퍼런스 논문의 문제점
+### 이상한 Restoration Torque 계산 방식
 논문저자는 Restoration 토크를 종례와는 다른 이상한 방식으로 계산하여, 잔디의 각변위와 restoration torque가 [선형적이지도 않고 모노토닉하지도 않은 관계가 생기게 하였습니다.](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#inconsistent-restoration-force-direction)
 잔디를 구부러 트리다가 일정 각도까지 구부러 트리면 잔디는 restoration 토크가 점차 0이 되었다가 더 구부리면 다시 늘어나는 이상한 계산식을 만들었고 이에 대한 어떤 정당성을 설명하지 않습니다.
 
 이는 논문 저자의 단순 실수로 보입니다.
 
-#### 레퍼런스 논문에서의 바람 포스와 공기 마찰 포스를 한점에 일어나는 포스 취급
+### 레퍼런스 논문에서의 바람 포스와 공기 마찰 포스를 한점에 일어나는 포스 취급
 
 바람과 공기 마찰로 인한 포스는 베지어 커브 라인 시그먼트 전체에 일어나게 됩니다. 그러나 논문의 저자는 각 포스가 각 라인 시그먼트 끝 부분에 일어나는 것 취급하여 토크를 계산합니다.
 그러면서 공기 마찰로 인한 포스 계산은 막대 끝이 실제로 받는 포스를 구하기 위해 막대 끝의 속도로 계산을 해야하는데 각 속도로 계산하는 실수를 합니다.
 
 올바른 토크를 구하고자 한다면 라인 시그먼트에 [미분하여 토크를 구하여야 합니다.](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#wind-and-air-friction-are-not-point-forces)
 
-#### 물리적인 요소를 무시하는 토크, 각 가속도 계산 방식
+### 물리적인 요소를 무시하는 토크, 각 가속도 계산 방식
 
 논문의 저자가 사용하는 토크 계산 방식과 각 가속도 계산 방식은 각 라인시그먼트가 독립적으로 존재할 때 쓸 수 있는 계산 방식입니다.
 예를 들어 위의 그림에서 Bar2 끝 부분을 반시계 방향으로 세게 친다면, 그 반동으로 Bar1은 시계방향으로 움직 일 수도 있습니다. 그러나 논문에서는 이런것을 전혀 고려 하지 않았습니다.
 
-### ABA 알고리즘을 도입 전의 배경
+## ABA 알고리즘을 도입 전의 배경
 논문의 저자가 무시한 물리적 요소를 고려한 모션을 어떻게 만들 수 있는지 구글링을 하며 조사했습니다.
 제가 아는 지식만으로는 쓸만한 검색 결과가 나오지 않아서, Claude AI에게 제가 가지고 있는 문제를 설명하며 혹시 풀이 방법을 아는지 혹은 이것과 연관된 키워드를 아는지 물어보았습니다.
 Claude AI는 제게 이런 문제는 **Multi-Bar Linkage** 시스템이라고 한다며 그걸로 검색해보라고 키워드를 줬습니다.
 
-### 정밀하지 않은 독자적인 알고리즘 Payback Method
+## 정밀하지 않은 독자적인 알고리즘 Payback Method
 
 ---
 이건 제가 어떤 독자적인 알고리즘을 생각해 냈고, 그것이 어떻게 작동하는지 대략적으로 적오는 섹션입니다.
@@ -201,7 +201,7 @@ Claude가 준 키워드로 검색하여 Freebody Diagram을 그리는 방식을 
 
 어느 정도 그럴듯한 움직임을 보여주기는 했습니다.
 
-### Articulated Body Algorithm
+## Articulated Body Algorithm
 
 정밀하진 않겠지만 어느정도 그럴듯한 알고리즘을 생각해냈다고 생각하고 있었습니다. 그런데 최근 Claude AI가 업데이트를 한듯하여 별 기대는 하지 않은채 다시 한번 물어봤습니다.
 
@@ -218,32 +218,32 @@ Multi-body Dynamics의 기초와 기본개념을 부랴부랴 4,5일 동안 공�
 
 제가 독자적으로 만든 알고리즘은 일단 옵션으로 선택할 수 있게 해두긴 했는데 그냥 버려도 될것 같습니다.
 
-### 최대 각 변위 제한
+## 최대 각 변위 제한
 
 현실의 잔디는 무한하게 회전하거나 꼬을 수 없습니다. 어느 축으로 회전하든 간에 최대 각도가 특정 threshold 이하가 되도록 하였고, 최대 각변위에 도달하면 각 속도는 0이 되게 하였습니다.
 
 [각변위 제한 알고리즘 링크](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#angular-displacement-magnitude-limitation-on-p0)
 
-### 지면 충돌 처리
+## 지면 충돌 처리
 
 지면 충돌은 지면의 노멀 벡터와 Bar1 방향의 dot product가 일정 threshold 값 이하가 되도록 하였고 threshold에 도달하면 속도가 0이 되게 하였습니다.
 
 [지면 충돌 알고리즘 링크](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#ground-collision)
 
 
-### 다이나믹 모션과 고스트 오브 쓰시마의 잔디의 조합
+## 다이나믹 모션과 고스트 오브 쓰시마의 잔디의 조합
 
 다이나믹스 모션을 사용했기에 각 잔디는 각 속도와 각 변위를 저장하여 가지고 있었고, 이를 손쉽게 구현하기 위해서 나이아가라를 사용할 필요가 있습니다.
 
 나이아가라 에미터는 나이아가라 데이터 채널(NDC)을 통해 생성되며 PCG가 잔디의 포인트 데이터를 NDC에 write하게 됩니다.
 
-### PCG + NDC
+## PCG + NDC
 PCG에서 NDC에 데이터를 쓰게 해주는 것은 최근 에픽게임즈에서 추가한 기능이며 아직 실험 스테이지인 플러그인을 추가하므로서 쓸 수 있습니다.
 이것은 새로 추가된 기능이라서 이에 대한 튜토리얼이나 가이드를 만든 사람이 아무도 없었고, 제가 스스로 트라이얼&에러를 겪으며 사용방식을 나름 정리하여 다른 사람들에게 도움이 될 수 있도록 튜토리얼 비디오를 만들었습니다.
 
 [🔗 PCG + Niagara 데이터 채널 튜토리얼](https://youtu.be/C1LmzQKNnzI)
 
-#### PCG와 Niagara 파티클 클린업
+### PCG와 Niagara 파티클 클린업
 
 PCG에서 Static Mesh Spawner와 사용할대와 달리, PCG는 직접적으로 나이아가라의 파티클을 지울 수 없습니다.
 PCG는 그저 NDC에 데이터를 쓰는것만이 가능합니다.
@@ -258,8 +258,9 @@ PCG는 카메라 위치에 따라 파티클 데이터를 다시 NDC에 보내게
 자세한 방식은 [튜토리얼 비디오](https://youtu.be/C1LmzQKNnzI)에서 확인 하실 수 있습니다.
 
 ---
+# 🧠 구현 요약 및 퍼포먼스
 
-## 🧠 프로젝트 요약
+## 프로젝트 요약
 
 - *Ghost of Tsushima* GDC 발표자료 기반
 - 계층적 PCG + Niagara + 물리를 활용한 실시간 풀 생성 및 모션 시스템
@@ -269,8 +270,6 @@ PCG는 카메라 위치에 따라 파티클 데이터를 다시 NDC에 보내게
     - ABA 기반 물리 동역학 모션
     - 관절 최대 각도 변위에 대한 물리적 제약
     - 각변위 기반 풀 잎 회전 추가
-
-
 
 ---
 ## 🛠️ 주요 기능
@@ -384,7 +383,7 @@ PCG는 카메라 위치에 따라 파티클 데이터를 다시 NDC에 보내게
 
 ---
 
-## 🛠️ 사용 플러그인
+# 🛠️ 사용 플러그인
 - Niagara
 - PCG
 - PCGNiagaraInterop (experimental)
@@ -394,7 +393,7 @@ PCG는 카메라 위치에 따라 파티클 데이터를 다시 NDC에 보내게
 
 ---
 
-## 📚 참고 자료
+# 📚 참고 자료
 
 - [Rigid Body Dynamics Algorithms - Roy Featherstone's book](https://link.springer.com/book/10.1007/978-1-4899-7560-7)
 - [GDC Presentation – Procedural Grass in *Ghost of Tsushima*](https://youtu.be/Ibe1JBF5i5Y?si=EbGqmGS29uNdBPUn)
@@ -403,7 +402,7 @@ PCG는 카메라 위치에 따라 파티클 데이터를 다시 NDC에 보내게
 
 ---
 
-## 다른 포트폴리오
+# 📁 다른 포트폴리오
 
 - [Implementation Photon Mapping & Disney's Photon Beam PBR with DirectX 12](https://github.com/donguklim/DirectX12PhotonBeam)
 - [Implementation Photon Mapping & Disney's Photon Beam PBR with Vulkan](https://github.com/donguklim/vk_raytracing_tutorial_KHR/tree/master/photon_beam)
