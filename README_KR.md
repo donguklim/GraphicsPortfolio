@@ -118,7 +118,7 @@ Linear interpolation을 위해 각 잔디 인스턴스가 되는 포인트는 �
 바람은 leveled gradient noise 함수를 사용해 생성됩니다. 기본적인 바람의 포스를 조절 할 수 있는 UI가 존재하며, 기본 포스에 노이즈로 인한 포스가 추가 됩니다.
 노이즈가 움직이는 방향은  기본 바람 포스와 같은 방향을 가지게 됩니다. 
 
-## Multi-body Dynamics 기반 모션 구현과정
+### Multi-body Dynamics 기반 모션 구현과정
 
 잔디의 모션에 대한 논문을 구글링 하면서, 고스트 오브 쓰시마와 똑같이 베지어 커브 잔디를 사용해 모션을 만드는 ID3 논문을([Grass Swaying with Dynamic Wind Force](https://dl.acm.org/doi/10.1145/2856400.2876008)) 찾게 되었습니다.
 
@@ -213,10 +213,51 @@ Claude가 준 키워드로 검색하여 Freebody Diagram을 그리는 방식을 
 
 Claude에게 왜 저번에는 안가르쳐줬냐고 따지니까 최근 업데이트 했고 Multi-body dynamics를 비롯한 로봇 공학 지식을 추가했다고 합니다.
 
-Multi-body Dynamics의 기초와 기본개념을 부랴부랴 4,5일 동안 공부했고, 이런 시뮬레이션에서 가장 효율적인 알고리즘인 Articulated Body Algorithm을 공부해 구현했습니다.
+Multi-body Dynamics의 기초와 기본개념을 부랴부랴 4,5일 동안 공부했고, 이런 종류의 시뮬레이션에서 가장 효율적인 알고리즘인 Articulated Body Algorithm을 공부해 구현했습니다. 
+알고리즘의 자세한 내용은 Roy Featherstone 교수님의 책 [Rigid Body Dynamics Algorithms](https://link.springer.com/book/10.1007/978-1-4899-7560-7)에 나와 있습니다.
 
 제가 독자적으로 만든 알고리즘은 일단 옵션으로 선택할 수 있게 해두긴 했는데 그냥 버려도 될것 같습니다.
 
+### 최대 각 변위 제한
+
+현실의 잔디는 무한하게 회전하거나 꼬을 수 없습니다. 어느 축으로 회전하든 간에 최대 각도가 특정 threshold 이하가 되도록 하였고, 최대 각변위에 도달하면 각 속도는 0이 되게 하였습니다.
+
+[각변위 제한 알고리즘 링크](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#angular-displacement-magnitude-limitation-on-p0)
+
+### 지면 충돌 처리
+
+지면 충돌은 지면의 노멀 벡터와 Bar1 방향의 dot product가 일정 threshold 값 이하가 되도록 하였고 threshold에 도달하면 속도가 0이 되게 하였습니다.
+
+[지면 충돌 알고리즘 링크](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics/blob/main/README.md#ground-collision)
+
+
+## 다이나믹 모션과 고스트 오브 쓰시마의 잔디의 조합
+
+다이나믹스 모션을 사용했기에 각 잔디는 각 속도와 각 변위를 저장하여 가지고 있었고, 이를 손쉽게 구현하기 위해서 나이아가라를 사용할 필요가 있습니다.
+
+나이아가라 에미터는 나이아가라 데이터 채널(NDC)을 통해 생성되며 PCG가 잔디의 포인트 데이터를 NDC에 write하게 됩니다.
+
+### PCG + NDC
+PCG에서 NDC에 데이터를 쓰게 해주는 것은 최근 에픽게임즈에서 추가한 기능이며 아직 실험 스테이지인 플러그인을 추가하므로서 쓸 수 있습니다.
+이것은 새로 추가된 기능이라서 이에 대한 튜토리얼이나 가이드를 만든 사람이 아무도 없었고, 제가 스스로 트라이얼&에러를 겪으며 사용방식을 나름 정리하여 다른 사람들에게 도움이 될 수 있도록 튜토리얼 비디오를 만들었습니다.
+
+[🔗 PCG + Niagara 데이터 채널 튜토리얼](https://youtu.be/C1LmzQKNnzI)
+
+#### PCG와 Niagara 파티클 클린업
+
+PCG에서 Static Mesh Spawner와 사용할대와 달리, PCG는 직접적으로 나이아가라의 파티클을 지울 수 없습니다.
+PCG는 그저 NDC에 데이터를 쓰는것만이 가능합니다.
+
+PCG는 카메라 위치에 따라 파티클 데이터를 다시 NDC에 보내게 되며 나이아가라 에미터에서 필요없는 파티클을 클린업 해주지 않으면 중복된 잔디가 생성됩니다.
+그렇기에 에미터가 필요없는 파티클이나 에미터 인스턴스 자신을 없애도록 해야합니다.
+
+현재 구현에서는 에미터가 다음과 같은 방식으로 파티클을 없애고 있습니다.
+1. 파티클이 속한 PCG 그리드와 카메라 간 거리 기준으로 제거
+2. 파티클 생성 시간과 마지막으로 PCG가 데이터를 보낸 시점 비교해서 오래된 파티클 제거.
+
+자세한 방식은 [튜토리얼 비디오](https://youtu.be/C1LmzQKNnzI)에서 확인 하실 수 있습니다.
+
+---
 
 ## 🧠 프로젝트 요약
 
@@ -229,7 +270,7 @@ Multi-body Dynamics의 기초와 기본개념을 부랴부랴 4,5일 동안 공�
   - 관절 최대 각도 변위에 대한 물리적 제약
   - 각변위 기반 풀 잎 회전 추가
 
----
+
 
 ---
 ## 🛠️ 주요 기능
@@ -261,18 +302,6 @@ Multi-body Dynamics의 기초와 기본개념을 부랴부랴 4,5일 동안 공�
     - 각도 변위 최대 값 제한 제약
     - 지면 충돌 처리
 - 고정된 잔디 길이
----
-
-## 🔌 Niagara 데이터 채널 + Procedural Content Generation 통합
-
-- Niagara 이미터가 PCG 그리드 기반으로 동적 생성
-- ABA 기반 모션 데이터(각속도, 가속도, 변위)를 Niagara에서 계산
-- 카메라 위치 기반으로 이미터 및 파티클 자동 정리
-- 커스텀 워크플로우:
-    - PCG가 **Niagara 데이터 채널**에 데이터 작성
-    - Niagara가 실시간으로 해석 및 시각화
-    - 이미터는 카메라 위치와 방향에 따라 파티클 또는 자신을 제거
-
 ---
 
 ## 🦾 움직임 비교
@@ -311,41 +340,7 @@ Multi-body Dynamics의 기초와 기본개념을 부랴부랴 4,5일 동안 공�
 
 ---
 
-## 🧪 보로노이 다이어그램 기반 절차적 다양성
 
-![Voronoi](./resources/voronoi_example.jpg)  
-**보로노이 다이어그램 예시:** 동일한 가장 가까운 포인트를 공유하는 위치들은 같은 영역에 속합니다.
-
-PCG로 생성한 보로노이 다이어그램 구역을 통해 다음 요소에 다양성 부여:
-- 풀 길이
-- 너비
-- 강성
-- 초기 방향
-- 색상 노이즈
-- 개체 밀도
-
-일부 특성은 선형 보간으로 부드럽게 전환:
-- 개체 밀도
-- 풀 길이
-
-![Voronoi Region](./resources/grass_voronoi_regions.jpg)  
-**풀 보로노이 다이어그램 구역 예시:** 박스 메시는 보로노이 다이어그램 포인트 위치. 세 개의 영역이 색상, 형상, 밀도가 다름
-
-![Linear Interpolation](./resources/voronoi_region_linear_intp.jpg)  
-**선형 보간 예시:** 중심(하얀 박스)에서 경계로 갈수록 풀 길이가 점차 변화
-
----
-
-## ⚔️ *Ghost of Tsushima*와 비교
-
-| 기능                            | Ghost of Tsushima        | 본 프로젝트 구현                      |
-|---------------------------------|---------------------------|--------------------------------|
-| 베지어 곡선 타입                | 3차 (4 포인트)           | 2차 (3 포인트)                     |
-| 풀 길이                         | 제어 안됨 (가변적)        | 고정 길이                          |
-| 움직임                          | 불명                      | ABA 기반 다중물체 역학 포워드 시뮬레이션       |
-| 런타임 생성 방식                | 커스텀 엔진               | UE5 PCG + Niagara 데이터 채널 인터페이스 |
-
----
 ## 🚀 Performance
 
 [GitHub 샘플 프로젝트](https://github.com/donguklim/Ghost-of-Tsushima-Grass-plus-Rotational-Dynamics)를 사용해,
@@ -375,40 +370,6 @@ PCG로 생성한 보로노이 다이어그램 구역을 통해 다음 요소에 
 | 75 – 80    | 2          | 1          | 1           | 1           |
 ---
 
-## 🤔 문제 해결 사례
-
-### 물리적으로 정확한 알고리즘 탐색
-
-참고 논문이 몇 가지 물리 요소를 무시하고 있다는 것을 알았지만, 이를 정확하게 계산하는 방법을 몰랐습니다.
-
-#### 해결 과정
-
-1. AI (Claude)에게 질문
-2. 신뢰할 수 없는 답변과 hallucination
-3. 이 문제의 전문 용어와 연구 분야 질문
-4. “Multi-body dynamics”라는 키워드 획득
-5. 검색해보니 정확히 필요한 분야였음
-6. 4일간 튜토리얼 및 기본 개념 학습
-7. ABA 구현 가능한 수준의 이해도 확보
-
-### PCG와 Niagara 파티클 클린업
-
-Static Mesh Spawner와 달리 PCG는 Niagara 파티클을 정리할 수 없음.  
-파티클 중복 생성을 방지하려면 Niagara 이미터가 직접 정리해야 함.
-
-#### 해결 방법
-
-1. 파티클이 속한 PCG 그리드와 카메라 간 거리 기준으로 제거
-2. 파티클 생성 시간과 마지막으로 PCG가 데이터를 보낸 시점 비교
-    - NDC 범위가 PCG 그리드 크기와 일치해야 함
-    - 캐릭터가 빠르게 이동하거나 텔레포트하는 경우엔 문제 가능
-    - 자세한 내용은 [튜토리얼 영상](https://youtu.be/C1LmzQKNnzI) 참조
-
-NDC에 PCG에서 직접 쓰는 기능은 신규 기능으로 튜토리얼이 없어 직접 시행착오를 겪으며 알아냄.  
-이를 바탕으로 다른 사람에게 도움이 될 수 있도록 튜토리얼 제작:  
-[🔗 PCG + Niagara 데이터 채널 튜토리얼](https://youtu.be/C1LmzQKNnzI)
-
----
 
 ## 🔮 향후 발전해야할 부분
 - Render Target 또는 추가 NDC 사용하여 플레이어 및 오브젝트와의 상호작용 구현
@@ -435,6 +396,7 @@ NDC에 PCG에서 직접 쓰는 기능은 신규 기능으로 튜토리얼이 없
 
 ## 📚 참고 자료
 
+- [Rigid Body Dynamics Algorithms - Roy Featherstone's book](https://link.springer.com/book/10.1007/978-1-4899-7560-7)
 - [GDC Presentation – Procedural Grass in *Ghost of Tsushima*](https://youtu.be/Ibe1JBF5i5Y?si=EbGqmGS29uNdBPUn)
 - [I3D Paper – Grass Swaying with Dynamic Wind Force](https://link.springer.com/article/10.1007/s00371-016-1263-7)
 - [Unreal Engine Documentation – Niagara Data Channels Intro](https://dev.epicgames.com/community/learning/tutorials/RJbm/unreal-engine-niagara-data-channels-intro)
