@@ -1,4 +1,4 @@
-# 🎮 Grass Motion with Multi-Body Dynamics in Unreal Engine 5
+# 🌱 Grass Motion with Multi-Body Dynamics in Unreal Engine 5
 
 > A physically-based grass animation system inspired by *Ghost of Tsushima*, implemented using Unreal Engine 5, Niagara, PCG, and multi-body dynamics.
 
