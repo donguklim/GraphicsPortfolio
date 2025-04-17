@@ -186,8 +186,30 @@ To calculate torque correctly, [integration over the entire segment is required]
 
 ### Ignoring Physical Interactions Between Connected Bars
 
-The torque and angular acceleration calculations used by the author are valid only when each segment is treated as independent.  
-For example, if the end of Bar2 is forcefully pushed counterclockwise, Bar1 could respond with a clockwise motion. This kind of interaction is not considered in the study at all.
+The method used by the paper's author for calculating angular acceleration completely neglects the recoil or dragging effects caused by the presence of joints.
+
+### Contradictory Additional Procedure
+
+The author of the paper uses several additional procedures to prevent the grass from exhibiting motion inconsistent with wind. However, some of these procedures exacerbate the problems mentioned above, creating even worse synergy effects.
+
+Specifically, the author calculates the torque between the ground and the grass joint using the following additional method:
+
+- The joint with the ground is restricted as a universal joint (rotating only around the ground's normal axis and the grass's local Y-axis).
+- The torque experienced by this joint is calculated based only on the force applied at the tip of the grass blade.
+
+![distorted_swing](./resources/distorted_swing.jpeg)
+
+As shown in the figure above, when wind applies force causing the grass to rotate around the Z-axis:
+
+- The torque applied to the grass is calculated based on the force at the grass tip, marked by the red vector.
+- The wind force acting on the point indicated by the blue vector is ignored.
+
+Torque increases proportionally with the distance from the joint. 
+Thus, the grass in the above scenario receives significantly less torque than it actually should.
+
+In an extreme scenario, if the tip of the grass touches the base, 
+the distance between the joint and the point of wind force application becomes zero, resulting in zero torque being applied to the grass.
+
 
 ## 🧩 How I Came to Implement the ABA Algorithm
 
