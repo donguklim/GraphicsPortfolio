@@ -451,6 +451,7 @@ Each grid size used a fixed generation radius, shown below:
 
 # 📚 References
 
+- [Rigid Body Dynamics Algorithms - Roy Featherstone's book](https://link.springer.com/book/10.1007/978-1-4899-7560-7)
 - [GDC Presentation – Procedural Grass in *Ghost of Tsushima*](https://youtu.be/Ibe1JBF5i5Y?si=EbGqmGS29uNdBPUn)
 - [I3D Paper – Grass Swaying with Dynamic Wind Force](https://link.springer.com/article/10.1007/s00371-016-1263-7)
 - [Unreal Engine Documentation – Niagara Data Channels Intro](https://dev.epicgames.com/community/learning/tutorials/RJbm/unreal-engine-niagara-data-channels-intro)
