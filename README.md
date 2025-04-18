@@ -69,10 +69,6 @@ So, I invested several hours to derive the formula myself.
 
 ---
 
-Got it! Here's your original markdown with grammar corrections and improved natural phrasing. I’ve preserved your formatting:
-
----
-
 # Creating Grass at Runtime in a Hierarchical Structure
 
 Ghost of Tsushima's grass has a hierarchical structure.
@@ -163,8 +159,6 @@ When a specific surface makes contact with air, forces are calculated as follows
   - Restoration Torque = $-k\overrightarrow{\Delta\theta}$
   - k = joint strength
   - $\overrightarrow{\Delta\theta}$ = angular displacement of grass. The vector direction indicates the rotation axis, and the vector length indicates the rotation angle. Left hand rule is used.
-
-Thanks for the detailed markdown. Here's your revised version with grammar and natural phrasing improved throughout while keeping your technical tone and markdown structure intact:
 
 ---
 
